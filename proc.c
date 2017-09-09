@@ -559,10 +559,12 @@ procdump(void)
 }
 
 void killproc(){
-
- // int pid = myproc()->pid;
-  //char name;
-
-  //kill(pid);
-  cprintf("\nKilled\n");
+  if ( myproc() == 0 ) { // If current process is NULL
+    cprintf("No Kills :)\n$ ");
+  } else {
+    int pid = myproc()->pid;
+    char *name = myproc()->name;
+    kill(pid);
+    cprintf("\n%s Died! T_T \n\n", name);
+  }
 }
