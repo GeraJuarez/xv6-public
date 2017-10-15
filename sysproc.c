@@ -107,3 +107,23 @@ int sys_set_priority(void) {
   myproc()->priority = priority;
   return 0;
 }
+
+int sys_getppid(void) {
+  return myproc()->parent->pid;
+}
+
+int sys_signal(void) {
+  int signum;
+  int func;
+  if ( argint(0, &signum) < 0 )
+    return -1;
+  if ( argint(1, &func) < 0 )
+    return -1;
+  signum -= 1; 
+  if ( signum > 3 || signum < 0 )
+    return -1;
+  myproc()->signals[signum] = (sighandler_t)func;
+  return 1;
+}
+
+// sys_killsignal in proc.c to have access to ptable
