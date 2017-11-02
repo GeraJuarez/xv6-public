@@ -443,3 +443,27 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+int sys_chmod(void) 
+{
+  char *file_name;
+  char *permissions;
+  struct inode *ip;
+
+  if ( argstr( 0, &permissions ) < 0 || argstr( 1, &file_name) < 0 )
+    return -1;
+
+  begin_op();
+  if ( ( ip = namei(file_name) ) == 0 ) 
+  {
+    end_op();
+    return -1;
+  }
+  ilock(ip);  // Pasa el nodo de HD a RAM
+  memmove( ip->permissions, permissions, 4 ); // Modifica los permisos del nodo
+  iupdate(ip);  // Actualiza nodos a HD
+  iunlock(ip);
+  end_op();
+
+  return 0;
+}
